@@ -1,4 +1,4 @@
-const product = "iphone 12";
+const product = "cubiertas de moto offroad";
 
 const config = {
     baseUrl: "https://api.mercadolibre.com/",
@@ -29,7 +29,24 @@ const config = {
         {
             "key": "sellerLink",
             "name": "url al vendedor"
+        },
+        {
+            "key": "sold_quantity",
+            "name": "Cantidad ventida"
+        },
+        {
+            "key": "model",
+            "name": "Modelo"
+        },
+        {
+            "key": "brand",
+            "name": "Marca"
+        },
+        {
+            "key": "manufacturer_tire_size",
+            "name": "Tamaño"
         }
     ],
+    item_attributes: ['model', 'brand', 'manufacturer_tire_size']
 }
 export default config;
