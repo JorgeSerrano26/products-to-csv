@@ -31,61 +31,61 @@ const getTotalPages = (total, limit) => {
 }
 
 async function start() {
-   console.log("retrieving packs page 1")
+    console.log("Retrieving packs, page: 1")
 
-   const { results: products, paging } = await Product.getProducts(config.product);
-   const { total, limit } = paging;
+    const { results: products, paging } = await Product.getProducts(config.product);
+    const { total, limit } = paging;
 
-   const totalPages = getTotalPages(total, limit);
-   console.log(products.length)
+    const totalPages = getTotalPages(total, limit);
 
-   let allProducts = [...products];
+    let allProducts = [...products];
 
-   for(let page = 1; page < totalPages; page++) {
-    console.log(`retrieving packs page ${page + 1}`)
-    const { results: products } = await Product.getProducts(config.product, page);
-   console.log(products.length)
-    
-    allProducts = [...allProducts, ...products];
-   }
+    for (let page = 1; page < totalPages; page++) {
+        console.log(`Retrieving packs, page ${page + 1}`)
+        const { results: products } = await Product.getProducts(config.product, page);
+        console.log(products.length)
 
-   console.log(`Total results found: ${allProducts.length} products`)
-
-   const finalProducts = allProducts.map(({ title, permalink, id, seller, price, sold_quantity }) => {
-    const { nickname, permalink: sellerLink } = seller;
-
-    return {
-        id,
-        title,
-        price,
-        permalink,
-        nickname,
-        sellerLink,
-        sold_quantity
+        allProducts = [...allProducts, ...products];
     }
-   })
 
-   const productsWithAttributes = [];
-   
-   console.log(`Processing products`)
-   for(let product of finalProducts) {
-    const { attributes } = await Item.getItem(product.id);
+    console.log(`Total results found: ${allProducts.length} products`)
 
-    const attributesToAdd = attributes
-        .filter(({ id }) => config.item_attributes.find((name) => name.toLowerCase() === id.toLowerCase()))
-        .reduce((acc, att) => ({
-            ...acc, 
-            [att.id.toLowerCase()]: att.value_name
-        }), {});
-        
+    const finalProducts = allProducts.map(({ title, permalink, id, seller, price, sold_quantity }) => {
+        const { nickname, permalink: sellerLink } = seller;
 
-    productsWithAttributes.push({
-        ...product,
-        ...attributesToAdd
-    });
-   }  
+        return {
+            id,
+            title,
+            price,
+            permalink,
+            nickname,
+            sellerLink,
+            sold_quantity
+        }
+    })
 
-   console.log(`${allProducts.length} products processed`)
+    const productsWithAttributes = [];
+
+    console.log(`Processing products`)
+    for (let product of finalProducts) {
+        console.log("Progress: " + (productsWithAttributes.length * 100) / finalProducts.length + "%");
+        const { attributes } = await Item.getItem(product.id);
+
+        const attributesToAdd = attributes
+            .filter(({ id }) => config.item_attributes.find((name) => name.toLowerCase() === id.toLowerCase()))
+            .reduce((acc, att) => ({
+                ...acc,
+                [att.id.toLowerCase()]: att.value_name
+            }), {});
+
+
+        productsWithAttributes.push({
+            ...product,
+            ...attributesToAdd
+        });
+    }
+
+    console.log(`${allProducts.length} products processed`)
 
     const header = buildHeader();
     const body = buildBody(productsWithAttributes);
