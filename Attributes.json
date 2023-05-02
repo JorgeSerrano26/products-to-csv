@@ -1,0 +1,22 @@
+[
+  { "id": "AUTOMOTIVE_TIRE_ASPECT_RATIO", "name": "Relación de aspecto" },
+  { "id": "BRAND", "name": "Marca" },
+  { "id": "ITEM_CONDITION", "name": "Condición del ítem" },
+  { "id": "LINE", "name": "Línea" },
+  { "id": "LOAD_INDEX", "name": "Índice de carga" },
+  { "id": "MANUFACTURER_TIRE_SIZE", "name": "Tamaño" },
+  { "id": "MODEL", "name": "Modelo" },
+  { "id": "MOTORCYCLE_GRIP_TYPE", "name": "Tipo de adherencia" },
+  {
+    "id": "MOTORCYCLE_RIDING_STYLE",
+    "name": "Estilo de conducción en moto"
+  },
+  { "id": "MOTORCYCLE_TERRAIN_TYPE", "name": "Tipo de terreno" },
+  { "id": "MOUNTING_TYPE", "name": "Tipo de montaje" },
+  { "id": "ORIGIN", "name": "Origen" },
+  { "id": "POSITION", "name": "Posición" },
+  { "id": "RIM_DIAMETER", "name": "Diámetro de la llanta" },
+  { "id": "SECTION_WIDTH", "name": "Ancho de sección" },
+  { "id": "SELLER_SKU", "name": "SKU" },
+  { "id": "TIRES_NUMBER", "name": "Cantidad de neumáticos" }
+]

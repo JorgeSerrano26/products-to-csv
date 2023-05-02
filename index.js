@@ -24,10 +24,34 @@ const buildBody = (products) => {
     return products.map(formatProduct).join("\n");
 }
 
-async function start() {
-   const { results: products } = await Product.getProducts(config.product);
+const getTotalPages = (total, limit) => {
+    const pages = Math.trunc(total / limit);
+    const extraPage = (total % limit === 0) ? 0 : 1;
+    return pages + extraPage;
+}
 
-   const finalProducts = products.map(({ title, permalink, id, seller, price, sold_quantity }) => {
+async function start() {
+   console.log("retrieving packs page 1")
+
+   const { results: products, paging } = await Product.getProducts(config.product);
+   const { total, limit } = paging;
+
+   const totalPages = getTotalPages(total, limit);
+   console.log(products.length)
+
+   let allProducts = [...products];
+
+   for(let page = 1; page < totalPages; page++) {
+    console.log(`retrieving packs page ${page + 1}`)
+    const { results: products } = await Product.getProducts(config.product, page);
+   console.log(products.length)
+    
+    allProducts = [...allProducts, ...products];
+   }
+
+   console.log(`Total results found: ${allProducts.length} products`)
+
+   const finalProducts = allProducts.map(({ title, permalink, id, seller, price, sold_quantity }) => {
     const { nickname, permalink: sellerLink } = seller;
 
     return {
@@ -43,6 +67,7 @@ async function start() {
 
    const productsWithAttributes = [];
    
+   console.log(`Processing products`)
    for(let product of finalProducts) {
     const { attributes } = await Item.getItem(product.id);
 
@@ -59,6 +84,8 @@ async function start() {
         ...attributesToAdd
     });
    }  
+
+   console.log(`${allProducts.length} products processed`)
 
     const header = buildHeader();
     const body = buildBody(productsWithAttributes);

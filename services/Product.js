@@ -4,13 +4,16 @@ import config from "../config.js"
 class Product {
     static #basePath = `${config.baseUrl}/sites/MLA/search`
 
-    static async getProducts(productQuery, page = 1) {
-        const { data } = await axios.get(`${this.#basePath}?q=${encodeURIComponent(productQuery)}`);
-        const { results } = data;
+    static async getProducts(productQuery, offset = 0) {
+        const { data } = await axios.get(`${this.#basePath}?q=${encodeURIComponent(productQuery)}`, {
+            params: {
+                offset,
+            }
+        });
+        const { results, paging } = data;
         return {
             results,
-            page,
-            total: 100
+            paging
         };
     }
 }
