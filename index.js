@@ -30,6 +30,20 @@ const getTotalPages = (total, limit) => {
     return pages + extraPage;
 }
 
+const filterRepeated = (products = []) => {
+    let unique = [];
+
+    for (let i = 0; i < products.length; i++) {
+        const el = products[i];
+
+        if (!unique.find(p => p.id === el.id)) {
+            unique.push(el);
+        }
+    }
+
+    return unique;
+}
+
 async function start() {
     console.log("Retrieving packs, page: 1")
 
@@ -43,14 +57,17 @@ async function start() {
     for (let page = 1; page < totalPages; page++) {
         console.log(`Retrieving packs, page ${page + 1}`)
         const { results: products } = await Product.getProducts(config.product, page);
-        console.log(products.length)
 
         allProducts = [...allProducts, ...products];
     }
 
     console.log(`Total results found: ${allProducts.length} products`)
 
-    const finalProducts = allProducts.map(({ title, permalink, id, seller, price, sold_quantity }) => {
+    const filteredProducts = filterRepeated(allProducts)
+
+    console.log(`Total unique products: ${filteredProducts.length} products`)
+
+    const finalProducts = filteredProducts.map(({ title, permalink, id, seller, price, sold_quantity }) => {
         const { nickname, permalink: sellerLink } = seller;
 
         return {
@@ -84,8 +101,8 @@ async function start() {
             ...attributesToAdd
         });
     }
-
-    console.log(`${allProducts.length} products processed`)
+    
+    console.log(`${finalProducts.length} products processed`)
 
     const header = buildHeader();
     const body = buildBody(productsWithAttributes);
